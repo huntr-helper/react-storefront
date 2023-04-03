@@ -19,6 +19,7 @@ import {
   AdyenTransactionProcessResponse,
 } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 import {
+  anyFormsValidating,
   areAllFormsValid,
   useCheckoutValidationActions,
   useCheckoutValidationState,
@@ -53,7 +54,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const { errorMessages } = useErrorMessages(adyenErrorMessages);
   const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
   const { validateAllForms } = useCheckoutValidationActions();
-  const { validating, validationState } = useCheckoutValidationState();
+  const { validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout, ...rest } = useCheckoutUpdateState();
   const { showCustomErrors } = useAlerts();
 
@@ -69,10 +70,11 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     component: DropinElement;
   } | null>(null);
 
-  const allFormsValid = areAllFormsValid({ validating, validationState });
-  console.log({ validating, validationState });
+  // const validating = anyFormsValidating(validationState);
+  // const allFormsValid = areAllFormsValid(validationState);
+  // console.log(validationState, validating);
 
-  const anyRequestsInProgress = areAnyRequestsInProgress({ updateState, loadingCheckout });
+  const anyRequestsInProgress = areAnyRequestsInProgress({ updateState, loadingCheckout, ...rest });
 
   const finishedApiChangesWithNoError = hasFinishedApiChangesWithNoError({
     updateState,
@@ -230,13 +232,24 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   });
 
   useEffect(() => {
-    console.log({
-      submitInProgress,
-      validating,
-      anyRequestsInProgress,
-      finishedApiChangesWithNoError,
-      allFormsValid,
-    });
+    const validating = anyFormsValidating(validationState);
+    const allFormsValid = areAllFormsValid(validationState);
+    // console.log({
+    //   validationState,
+    //   finishedApiChangesWithNoError,
+    //   allFormsValid,
+    //   validating,
+    //   anyFormsValidating,
+    //   adyenCheckoutSubmitParams,
+    //   submitInProgress,
+    // });
+    // console.log({
+    //   submitInProgress,
+    //   validating,
+    //   anyRequestsInProgress,
+    //   finishedApiChangesWithNoError,
+    //   allFormsValid,
+    // });
     if (!submitInProgress || validating || anyRequestsInProgress || !adyenCheckoutSubmitParams) {
       console.log("NO SUBMIT IN PROGRESS OR VALIDATING OR REQUESTS IN PROGRESS OR NO PARAMS");
       return;
@@ -277,7 +290,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     });
   }, [
     adyenCheckoutSubmitParams,
-    allFormsValid,
     anyRequestsInProgress,
     checkoutId,
     currentTransactionId,
@@ -288,7 +300,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     submitInProgress,
     totalPrice.gross.amount,
     validateAllForms,
-    validating,
+    validationState,
   ]);
 
   const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(

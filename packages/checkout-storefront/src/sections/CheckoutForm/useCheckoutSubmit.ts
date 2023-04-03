@@ -5,6 +5,7 @@ import {
   useCheckoutUpdateStateActions,
 } from "@/checkout-storefront/state/updateStateStore";
 import {
+  anyFormsValidating,
   areAllFormsValid,
   useCheckoutValidationActions,
   useCheckoutValidationState,
@@ -16,10 +17,13 @@ import { useUser } from "@/checkout-storefront/hooks/useUser";
 export const useCheckoutSubmit = () => {
   const { user } = useUser();
   const { validateAllForms } = useCheckoutValidationActions();
-  const { validating, validationState } = useCheckoutValidationState();
+  const { validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateState();
   const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { checkoutFinalize, finalizing } = useCheckoutFinalize();
+
+  const validating = anyFormsValidating(validationState);
+  const allFormsValid = areAllFormsValid(validationState);
 
   const submitInitialize = useCallback(() => {
     setSubmitInProgress(true);
@@ -42,8 +46,6 @@ export const useCheckoutSubmit = () => {
     loadingCheckout,
     submitInProgress,
   });
-
-  const allFormsValid = areAllFormsValid({ validating, validationState });
 
   const handleSubmit = useCallback(async () => {
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {

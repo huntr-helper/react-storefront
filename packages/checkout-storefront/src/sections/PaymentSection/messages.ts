@@ -2,10 +2,10 @@ import { PaymentMethodID } from "checkout-common";
 import { defineMessages } from "react-intl";
 
 export const paymentSectionMessages = defineMessages({
-  paymentProviders: {
-    defaultMessage: "Payment providers",
-    id: "PaymentSection/messages/8YE5b7",
-    description: "payment providers",
+  paymentMethods: {
+    defaultMessage: "Payment methods",
+    id: "PaymentSection/messages/yz03kH",
+    description: "payment methods",
   },
 });
 

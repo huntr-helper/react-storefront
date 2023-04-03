@@ -486,10 +486,6 @@
     "developer_comment": "change password visibility accessibility label",
     "string": "change password visibility"
   },
-  "PaymentSection/messages/8YE5b7": {
-    "developer_comment": "payment providers",
-    "string": "Payment providers"
-  },
   "PaymentSection/messages/FK5Bg/": {
     "developer_comment": "payment providers accessibility label",
     "string": "payment providers"
@@ -513,6 +509,10 @@
   "PaymentSection/messages/xXCQ+K": {
     "developer_comment": "dummy payment method",
     "string": "Dummy"
+  },
+  "PaymentSection/messages/yz03kH": {
+    "developer_comment": "payment methods",
+    "string": "Payment methods"
   },
   "RootViews/messages/Cm6A9z": {
     "developer_comment": "loading",
