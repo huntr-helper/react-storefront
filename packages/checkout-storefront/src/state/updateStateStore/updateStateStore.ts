@@ -31,6 +31,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
   submitInProgress: false,
   loadingCheckout: false,
   updateState: {
+    paymentGatewaysInitialize: "success",
     checkoutShippingUpdate: "success",
     checkoutCustomerAttach: "success",
     checkoutBillingUpdate: "success",
@@ -91,7 +92,16 @@ export const useUserRegisterState = () => {
 export const useCheckoutUpdateStateActions = () =>
   useCheckoutUpdateStateStore(({ actions }) => omit(actions, "setUpdateState"));
 
-export const useCheckoutUpdateStateChange = (scope: CheckoutUpdateStateScope) =>
-  useCheckoutUpdateStateStore(({ actions: { setUpdateState } }) => ({
-    setCheckoutUpdateState: setUpdateState(scope),
+export function useCheckoutUpdateStateChange(scope: CheckoutUpdateStateScope): {
+  setCheckoutUpdateState: (status: CheckoutUpdateStateStatus) => void;
+};
+
+export function useCheckoutUpdateStateChange(scope: undefined): {
+  setCheckoutUpdateState: () => void;
+};
+
+export function useCheckoutUpdateStateChange(scope?: CheckoutUpdateStateScope) {
+  return useCheckoutUpdateStateStore(({ actions: { setUpdateState } }) => ({
+    setCheckoutUpdateState: scope ? setUpdateState(scope) : () => {},
   }));
+}

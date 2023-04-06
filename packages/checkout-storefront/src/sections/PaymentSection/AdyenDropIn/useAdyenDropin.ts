@@ -62,17 +62,12 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const [, transactionInitialize] = useTransactionInitializeMutation();
   const [, transactionProccess] = useTransactionProcessMutation();
   const { onCheckoutComplete } = useCheckoutComplete();
-  // const [submitting, setSubmitting] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
   const [adyenCheckoutSubmitParams, setAdyenCheckoutSubmitParams] = useState<{
     state: AdyenCheckoutInstanceState;
     component: DropinElement;
   } | null>(null);
-
-  // const validating = anyFormsValidating(validationState);
-  // const allFormsValid = areAllFormsValid(validationState);
-  // console.log(validationState, validating);
 
   const anyRequestsInProgress = areAnyRequestsInProgress({ updateState, loadingCheckout, ...rest });
 
@@ -115,10 +110,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
           return;
         case "Refused":
           setCurrentTransactionId(undefined);
-          // adyenCheckoutSubmitParams?.component.setStatus("error", {
-          //   //needs translation
-          //   message: paymentResponse.refusalReason,
-          // });
 
           adyenCheckoutSubmitParams?.component.setStatus("ready");
 
@@ -128,7 +119,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
           setTimeout(() => {}, 10000);
           return;
-        // case "Received":
       }
     },
     [adyenCheckoutSubmitParams?.component, errorMessages, showCustomErrors]
@@ -140,12 +130,12 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   >(
     useMemo(
       () => ({
-        scope: "transactionInitialize",
         onSubmit: transactionInitialize,
-        parse: (formData) => formData,
         onError: () => {
-          adyenCheckoutSubmitParams?.component.setStatus("error");
+          showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
+          adyenCheckoutSubmitParams?.component.setStatus("ready");
         },
+        extractCustomErrors: (result) => result?.data?.transactionInitialize?.data?.errors,
         onSuccess: async ({ data }) => {
           // setSubmitting(false);
 
@@ -186,13 +176,12 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   >(
     useMemo(
       () => ({
-        scope: "transactionProcess",
         onSubmit: transactionProccess,
-        parse: (formData) => formData,
-        // onError: () => {
-        //   console.log("YOOOO?");
-        //   adyenCheckoutSubmitParams?.component.setStatus("ready");
-        // },
+        onError: () => {
+          showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
+          adyenCheckoutSubmitParams?.component.setStatus("ready");
+        },
+        extractCustomErrors: (result) => result?.data?.transactionProcess?.data?.errors,
         onSuccess: ({ data }) => {
           // setSubmitting(false);
 
@@ -215,6 +204,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
         },
       }),
       [
+        adyenCheckoutSubmitParams?.component,
         commonErrorMessages.somethingWentWrong,
         handlePaymentResult,
         showCustomErrors,
@@ -234,39 +224,29 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   useEffect(() => {
     const validating = anyFormsValidating(validationState);
     const allFormsValid = areAllFormsValid(validationState);
-    // console.log({
-    //   validationState,
-    //   finishedApiChangesWithNoError,
-    //   allFormsValid,
-    //   validating,
-    //   anyFormsValidating,
-    //   adyenCheckoutSubmitParams,
-    //   submitInProgress,
-    // });
-    // console.log({
-    //   submitInProgress,
-    //   validating,
-    //   anyRequestsInProgress,
-    //   finishedApiChangesWithNoError,
-    //   allFormsValid,
-    // });
+
+    // no submit in progess or still validating forms or some requests in progress or no params
+    // do nothing
     if (!submitInProgress || validating || anyRequestsInProgress || !adyenCheckoutSubmitParams) {
       console.log("NO SUBMIT IN PROGRESS OR VALIDATING OR REQUESTS IN PROGRESS OR NO PARAMS");
       return;
     }
 
+    // there was en error either in some other request or form validation
+    // stop the submission altogether
     if (!finishedApiChangesWithNoError || !allFormsValid) {
-      // validated, failed, let's reset the state
       console.log("API CHANGES ERROR OR FORMS INVALID");
       adyenCheckoutSubmitParams?.component.setStatus("ready");
       setSubmitInProgress(false);
-      // setAdyenCheckoutSubmitParams(null);
       return;
     }
 
-    adyenCheckoutSubmitParams.component.setStatus("loading");
+    // submit in progress only means that submit has been initialized
+    // we want to disable it here so it's no run again
     setSubmitInProgress(false);
+    adyenCheckoutSubmitParams.component.setStatus("loading");
 
+    // there is a previous transaction going on, we want to process instead of initialize
     if (currentTransactionId) {
       console.log("SUBMITEN PROCESS");
       void onTransactionProccess({
@@ -294,13 +274,12 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     checkoutId,
     currentTransactionId,
     finishedApiChangesWithNoError,
-    id,
-    onTransactionInitialize,
-    onTransactionProccess,
+    // onTransactionInitialize,
+    // onTransactionProccess,
     submitInProgress,
     totalPrice.gross.amount,
-    validateAllForms,
     validationState,
+    id,
   ]);
 
   const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(

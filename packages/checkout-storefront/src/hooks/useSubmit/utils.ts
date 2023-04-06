@@ -1,9 +1,12 @@
+import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import {
   MutationBaseFn,
   MutationData,
   MutationResultData,
   MutationSuccessData,
 } from "@/checkout-storefront/hooks/useSubmit/types";
+import { CombinedError } from "urql";
 
 type SuccessDataReturn<TMutationFn extends MutationBaseFn> =
   | {
@@ -41,4 +44,37 @@ export const extractMutationData = <TMutationFn extends MutationBaseFn>(
   }
 
   return failedResponse;
+};
+
+export type ExtractedMutationErrors<
+  TData extends FormDataBase,
+  TErrorCodes extends string = string
+> = {
+  hasErrors: boolean;
+  apiErrors: ApiErrors<TData, TErrorCodes>;
+  graphqlErrors: CombinedError[];
+  customErrors: any[];
+};
+
+export const extractMutationErrors = <
+  TData extends FormDataBase,
+  TMutationFn extends MutationBaseFn,
+  TErrorCodes extends string = string
+>(
+  result: MutationData<TMutationFn>,
+  extractCustomErrors?: (result: MutationData<TMutationFn>) => any[] | null | undefined
+): ExtractedMutationErrors<TData, TErrorCodes> => {
+  const graphqlErrors = result?.error ? [result.error] : [];
+
+  const apiErrors = result?.data
+    ? Object.values(
+        result.data as Record<string, { errors: ApiErrors<TData, TErrorCodes> }>
+      ).reduce((result, { errors }) => [...result, ...errors], [] as ApiErrors<TData, TErrorCodes>)
+    : [];
+
+  const customErrors = extractCustomErrors?.(result) || [];
+
+  const allErrors = [...apiErrors, ...graphqlErrors, ...customErrors];
+
+  return { hasErrors: allErrors.length > 0, apiErrors, graphqlErrors, customErrors };
 };
