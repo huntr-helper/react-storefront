@@ -12,11 +12,13 @@ export interface CheckoutUpdateState {
   loadingCheckout: boolean;
   updateState: Record<CheckoutUpdateStateScope, CheckoutUpdateStateStatus>;
   submitInProgress: boolean;
+  changingBillingCountry: boolean;
 }
 
 export interface CheckoutUpdateStateStore extends CheckoutUpdateState {
   shouldRegisterUser: boolean;
   actions: {
+    setChangingBillingCountry: (changingBillingCountry: boolean) => void;
     setSubmitInProgress: (submitInProgress: boolean) => void;
     setShouldRegisterUser: (shouldRegisterUser: boolean) => void;
     setLoadingCheckout: (loading: boolean) => void;
@@ -30,6 +32,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
   shouldRegisterUser: false,
   submitInProgress: false,
   loadingCheckout: false,
+  changingBillingCountry: false,
   updateState: {
     paymentGatewaysInitialize: "success",
     checkoutShippingUpdate: "success",
@@ -55,6 +58,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
         shouldRegisterUser,
       }),
     setLoadingCheckout: (loading: boolean) => set({ loadingCheckout: loading }),
+    setChangingBillingCountry: (changingBillingCountry: boolean) => set({ changingBillingCountry }),
     setUpdateState: memoize(
       (scope) => (status) =>
         set((state) => ({
@@ -72,16 +76,18 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
 }));
 
 export const useCheckoutUpdateState = (): CheckoutUpdateState => {
-  const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateStateStore(
-    ({ updateState, loadingCheckout, submitInProgress }) => ({
-      updateState,
-      loadingCheckout,
-      submitInProgress,
-    }),
-    shallow
-  );
+  const { updateState, loadingCheckout, submitInProgress, changingBillingCountry } =
+    useCheckoutUpdateStateStore(
+      ({ updateState, loadingCheckout, submitInProgress, changingBillingCountry }) => ({
+        changingBillingCountry,
+        updateState,
+        loadingCheckout,
+        submitInProgress,
+      }),
+      shallow
+    );
 
-  return { updateState, loadingCheckout, submitInProgress };
+  return { updateState, loadingCheckout, submitInProgress, changingBillingCountry };
 };
 
 export const useUserRegisterState = () => {

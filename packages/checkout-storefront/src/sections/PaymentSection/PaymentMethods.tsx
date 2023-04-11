@@ -6,15 +6,25 @@
 // import { usePaymentMethodsForm } from "@/checkout-storefront/sections/PaymentSection/usePaymentMethodsForm";
 // import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { AdyenDropIn } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/AdyenDropIn";
+import { PaymentSectionSkeleton } from "@/checkout-storefront/sections/PaymentSection/PaymentSectionSkeleton";
 import { usePayments } from "@/checkout-storefront/sections/PaymentSection/usePayments";
+import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
 
 export const PaymentMethods = () => {
   // const formatMessage = useFormattedMessages();
   // const { form, availablePaymentMethods, availablePaymentProviders } = usePaymentMethodsForm();
   const { /*availablePaymentMethods,*/ availablePaymentGateways } = usePayments();
+  const {
+    updateState: { paymentGatewaysInitialize },
+    changingBillingCountry,
+  } = useCheckoutUpdateState();
 
   const { adyen } = availablePaymentGateways;
   // console.log
+
+  if (changingBillingCountry || paymentGatewaysInitialize === "loading") {
+    return <PaymentSectionSkeleton />;
+  }
 
   return adyen ? <AdyenDropIn config={adyen} /> : null;
   // return showAdyenDropin ? (

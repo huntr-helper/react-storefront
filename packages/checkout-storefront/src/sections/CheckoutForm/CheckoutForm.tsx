@@ -16,9 +16,11 @@ import { Divider } from "@/checkout-storefront/components";
 import { UserShippingAddressSection } from "@/checkout-storefront/sections/UserShippingAddressSection";
 import { GuestShippingAddressSection } from "@/checkout-storefront/sections/GuestShippingAddressSection";
 import { UserBillingAddressSection } from "@/checkout-storefront/sections/UserBillingAddressSection";
-import { PaymentSection } from "@/checkout-storefront/sections/PaymentSection";
+import {
+  PaymentSection,
+  PaymentSectionSkeleton,
+} from "@/checkout-storefront/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout-storefront/sections/GuestBillingAddressSection";
-import { useFetchPaymentMethods } from "@/checkout-storefront/hooks/useFetchPaymentMethods";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const CheckoutForm = () => {
@@ -58,11 +60,13 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods collapsed={showOnlyContact} />
           </Suspense>
-          <CollapseSection collapse={showOnlyContact}>
-            <PaymentSection>
-              {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-            </PaymentSection>
-          </CollapseSection>
+          <Suspense fallback={<PaymentSectionSkeleton />}>
+            <CollapseSection collapse={showOnlyContact}>
+              <PaymentSection>
+                {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+              </PaymentSection>
+            </CollapseSection>
+          </Suspense>
         </>
       </div>
       {shouldShowPayButton &&

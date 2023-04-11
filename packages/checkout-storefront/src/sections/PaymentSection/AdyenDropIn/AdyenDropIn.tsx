@@ -8,9 +8,9 @@ import {
   useAdyenDropin,
 } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/useAdyenDropin";
 import "@adyen/adyen-web/dist/adyen.css";
-import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { Locale } from "@/checkout-storefront/lib/regions";
+import { ParsedAdyenGateway } from "@/checkout-storefront/sections/PaymentSection/types";
+import { isEqual } from "lodash-es";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -22,12 +22,14 @@ type DropinElement = ReturnType<typeof _hack>;
 export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
   const { locale } = useLocale();
   const { onSubmit, onAdditionalDetails } = useAdyenDropin({ config });
+  const prevConfig = useRef<ParsedAdyenGateway>(config);
+  const prevLocale = useRef<Locale>(locale);
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
-  const previousCountryCode = useRef(getParsedLocaleData(locale).countryCode);
 
   const createAdyenCheckoutInstance = useCallback(
     async (locale: Locale, container: HTMLDivElement) => {
+      // console.log(123, { lol: config.data });
       const adyenCheckout = await AdyenCheckout(
         createAdyenCheckoutConfig({ ...config.data, locale, onSubmit, onAdditionalDetails })
       );
@@ -39,36 +41,41 @@ export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
     [config.data, onAdditionalDetails, onSubmit]
   );
 
-  const handleUrlChange = useCallback(
-    ({ queryParams: { locale } }: UrlChangeHandlerArgs) => {
-      const newCountryCode = getParsedLocaleData(locale).countryCode;
-
-      const hasCountryChanged = newCountryCode !== previousCountryCode.current;
-
-      if (hasCountryChanged && dropinContainerElRef.current) {
-        previousCountryCode.current = newCountryCode;
-
-        // dropinComponentRef.current?.unmount();
-
-        void createAdyenCheckoutInstance(locale, dropinContainerElRef.current);
-      }
-    },
-    [createAdyenCheckoutInstance]
-  );
-
   useEffect(() => {
-    if (dropinComponentRef.current || !dropinContainerElRef.current) {
+    const hasConfigChanged = !isEqual(config, prevConfig.current);
+    const hasLocaleChanged = locale !== prevLocale.current;
+
+    // console.log(
+    //   123,
+    //   config,
+    //   prevConfig.current,
+    //   hasConfigChanged,
+    //   hasLocaleChanged,
+    //   dropinComponentRef.current,
+    //   dropinContainerElRef.current
+    // );
+    if (!dropinContainerElRef.current || (!hasConfigChanged && !hasLocaleChanged)) {
+      // console.log(123, "EXIT");
       return;
     }
 
+    if (hasLocaleChanged) {
+      prevLocale.current = locale;
+    }
+
+    if (hasConfigChanged) {
+      prevConfig.current = config;
+    }
+
+    // console.log(123, "PROCEED");
     void createAdyenCheckoutInstance(locale, dropinContainerElRef.current);
+  }, [config, createAdyenCheckoutInstance, locale]);
 
-    // return () => {
-    //   dropinComponentRef.current?.unmount();
-    // };
-  }, [createAdyenCheckoutInstance, locale]);
-
-  useUrlChange(handleUrlChange);
+  useEffect(() => {
+    if (dropinContainerElRef.current && !dropinComponentRef.current) {
+      void createAdyenCheckoutInstance(locale, dropinContainerElRef.current);
+    }
+  }, []);
 
   return <div ref={dropinContainerElRef} />;
 };

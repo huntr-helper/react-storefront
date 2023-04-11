@@ -40,6 +40,7 @@ export interface UseSubmitProps<
   parse?: ParserFunction<TData, TMutationFn>;
   onAbort?: (props: CallbackProps<TData>) => void;
   onSuccess?: (props: CallbackProps<TData> & { data: MutationSuccessData<TMutationFn> }) => void;
+  onFinished?: () => void;
   onError?: (
     props: CallbackProps<TData> & {
       errors: ApiErrors<TData, TErrorCodes>;
@@ -67,6 +68,7 @@ export const useSubmit = <
   scope,
   shouldAbort,
   parse,
+  onFinished,
   extractCustomErrors,
   hideAlerts = false,
 }: UseSubmitProps<TData, TMutationFn, TErrorCodes>): SimpleSubmitFn<TData, TErrorCodes> => {
@@ -94,6 +96,8 @@ export const useSubmit = <
         return { hasErrors: false, apiErrors: [], customErrors: [], graphqlErrors: [] };
       }
 
+      setCheckoutUpdateState("loading");
+
       const commonData: CommonVars = {
         languageCode: localeToLanguageCode(localeData.locale),
         channel: checkout.channel.slug,
@@ -120,6 +124,7 @@ export const useSubmit = <
         onSuccess?.({ ...callbackProps, data });
         setCheckoutUpdateState("success");
 
+        onFinished?.();
         return { hasErrors, apiErrors, ...errorsRest };
       }
 
@@ -131,11 +136,13 @@ export const useSubmit = <
         showErrors(apiErrors, scope);
       }
 
+      onFinished?.();
       return { hasErrors, apiErrors, ...errorsRest };
     },
     [
       onStart,
       shouldAbort,
+      setCheckoutUpdateState,
       localeData.locale,
       checkout.channel.slug,
       checkout.id,
@@ -143,12 +150,12 @@ export const useSubmit = <
       parse,
       extractCustomErrors,
       onError,
-      setCheckoutUpdateState,
       hideAlerts,
+      scope,
+      onFinished,
       onAbort,
       onSuccess,
       showErrors,
-      scope,
     ]
   );
 

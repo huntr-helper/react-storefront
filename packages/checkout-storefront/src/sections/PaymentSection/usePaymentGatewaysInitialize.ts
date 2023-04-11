@@ -1,19 +1,30 @@
-import { usePaymentGatewaysInitializeMutation } from "@/checkout-storefront/graphql";
+import { CountryCode, usePaymentGatewaysInitializeMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
+import { Locale } from "@/checkout-storefront/lib/regions";
 import { ParsedPaymentGateways } from "@/checkout-storefront/sections/PaymentSection/types";
 import {
   getFilteredPaymentGateways,
   getParsedPaymentGatewayConfigs,
 } from "@/checkout-storefront/sections/PaymentSection/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const usePaymentGatewaysInitialize = () => {
+  const { locale } = useLocale();
+  const {
+    checkout: { billingAddress },
+  } = useCheckout();
   const {
     checkout: { id: checkoutId, availablePaymentGateways },
   } = useCheckout();
 
+  const billingCountry = billingAddress?.country.code as CountryCode | null | undefined;
+
   const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>({});
+  const previousLocale = useRef<Locale>(locale);
+  const previousBillingCountry = useRef(billingCountry);
 
   const [{ fetching }, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
 
@@ -47,6 +58,28 @@ export const usePaymentGatewaysInitialize = () => {
   useEffect(() => {
     void onSubmit();
   }, []);
+
+  const handleLocaleChange = useCallback(
+    ({ queryParams: { locale: locale } }: UrlChangeHandlerArgs) => {
+      const hasLocaleChanged = locale !== previousLocale.current;
+
+      if (hasLocaleChanged) {
+        previousLocale.current = locale;
+
+        void onSubmit();
+      }
+    },
+    [onSubmit]
+  );
+
+  useUrlChange(handleLocaleChange);
+
+  useEffect(() => {
+    if (billingCountry !== previousBillingCountry.current) {
+      previousBillingCountry.current = billingCountry;
+      void onSubmit();
+    }
+  }, [billingCountry, onSubmit]);
 
   return {
     fetching,

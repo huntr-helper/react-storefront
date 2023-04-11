@@ -33,6 +33,7 @@ interface UseFormSubmitProps<
   parse?: ParserFunction<TData, TMutationFn>;
   onAbort?: (props: CallbackProps<TData>) => void;
   onSuccess?: (props: CallbackProps<TData> & { data: MutationSuccessData<TMutationFn> }) => void;
+  onFinished?: () => void;
   onError?: (
     props: CallbackProps<TData> & {
       errors: ApiErrors<TData, TErrorCodes>;
