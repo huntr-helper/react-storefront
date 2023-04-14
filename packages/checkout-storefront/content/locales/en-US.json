@@ -251,22 +251,6 @@
     "developer_comment": "The shopper's bank requires a checking account to complete the purchase.",
     "string": "The shopper's bank requires a checking account to complete the purchase."
   },
-  "CheckoutForm/messages/+qM8r0": {
-    "developer_comment": "missing fields in billing address",
-    "string": "There are certain fields in billing form that are missing or invalid"
-  },
-  "CheckoutForm/messages/UDs7fN": {
-    "developer_comment": "pay accessibility label",
-    "string": "pay"
-  },
-  "CheckoutForm/messages/guvzy3": {
-    "developer_comment": "missing fields in shipping address",
-    "string": "There are certain fields in shipping address form that are missing or invalid"
-  },
-  "CheckoutForm/messages/jLJToZ": {
-    "developer_comment": "pay",
-    "string": "Pay"
-  },
   "Contact/messages//BXzqC": {
     "developer_comment": "new customer?",
     "string": "New customer?"

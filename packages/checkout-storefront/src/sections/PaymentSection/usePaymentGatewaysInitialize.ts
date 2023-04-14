@@ -3,6 +3,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { Locale } from "@/checkout-storefront/lib/regions";
 import { ParsedPaymentGateways } from "@/checkout-storefront/sections/PaymentSection/types";
 import {
@@ -20,7 +21,7 @@ export const usePaymentGatewaysInitialize = () => {
     checkout: { id: checkoutId, availablePaymentGateways },
   } = useCheckout();
 
-  const billingCountry = billingAddress?.country.code as CountryCode | null | undefined;
+  const billingCountry = billingAddress?.country.code as MightNotExist<CountryCode>;
 
   const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>({});
   const previousLocale = useRef<Locale>(locale);

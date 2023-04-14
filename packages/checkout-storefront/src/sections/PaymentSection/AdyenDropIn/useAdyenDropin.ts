@@ -1,7 +1,5 @@
 import {
-  TransactionEvent,
   TransactionInitializeMutationVariables,
-  TransactionItem,
   TransactionProcessMutationVariables,
   useTransactionInitializeMutation,
   useTransactionProcessMutation,
@@ -10,13 +8,11 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useEvent } from "@/checkout-storefront/hooks/useEvent";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
 import {
   AdyenCheckoutInstanceOnAdditionalDetails,
   AdyenCheckoutInstanceOnSubmit,
   AdyenCheckoutInstanceState,
   AdyenPaymentResponse,
-  AdyenTransactionProcessResponse,
 } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 import {
   anyFormsValidating,
@@ -26,7 +22,12 @@ import {
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
 import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import {
+  clearQueryParams,
+  getQueryParams,
+  ParamBasicValue,
+  replaceUrl,
+} from "@/checkout-storefront/lib/utils/url";
 import { ParsedAdyenGateway } from "@/checkout-storefront/sections/PaymentSection/types";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import {
@@ -35,10 +36,11 @@ import {
   useCheckoutUpdateState,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutComplete } from "@/checkout-storefront/hooks/useCheckoutComplete";
-import { ErrorMessages, useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
+import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { adyenErrorMessages } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/errorMessages";
 import { camelCase } from "lodash-es";
 import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;
@@ -58,7 +60,9 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const { updateState, loadingCheckout, ...rest } = useCheckoutUpdateState();
   const { showCustomErrors } = useAlerts();
 
-  const [currentTransactionId, setCurrentTransactionId] = useState<string | undefined>();
+  const [currentTransactionId, setCurrentTransactionId] = useState<ParamBasicValue>(
+    getQueryParams().transaction
+  );
   const [, transactionInitialize] = useTransactionInitializeMutation();
   const [, transactionProccess] = useTransactionProcessMutation();
   const { onCheckoutComplete } = useCheckoutComplete();
@@ -81,23 +85,20 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     ({
       paymentResponse,
       transaction,
-      transactionEvent,
     }: {
       paymentResponse: AdyenPaymentResponse;
-      transaction: TransactionItem;
-      TransactionEvent: TransactionEvent;
+      transaction: MightNotExist<{ id: string }>;
     }) => {
       const { action, resultCode } = paymentResponse;
 
       if (transaction) {
         setCurrentTransactionId(transaction.id);
+        replaceUrl({ query: { transaction: transaction.id } });
       }
 
       if (action) {
         adyenCheckoutSubmitParams?.component.handleAction(action);
       }
-
-      console.log(222, { resultCode, transaction, transactionEvent });
 
       switch (resultCode) {
         case "Authorised":
@@ -117,7 +118,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
           showCustomErrors([{ message: errorMessages[messageKey as keyof typeof errorMessages] }]);
 
-          setTimeout(() => {}, 10000);
           return;
       }
     },
@@ -144,9 +144,9 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
             return;
           }
 
-          const { transaction, transactionEvent, data: adyenData } = data;
+          const { transaction, data: adyenData } = data;
 
-          if (!transaction || !adyenData || !transactionEvent) {
+          if (!transaction || !adyenData) {
             //alert?
             return;
           }
@@ -155,7 +155,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
             void handlePaymentResult({
               paymentResponse: adyenData.paymentResponse,
               transaction,
-              transactionEvent,
             });
           }
         },
@@ -192,14 +191,12 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
           const {
             transaction,
-            transactionEvent,
             data: { paymentDetailsResponse },
           } = data;
 
           handlePaymentResult({
             paymentResponse: paymentDetailsResponse,
             transaction,
-            transactionEvent,
           });
         },
       }),
@@ -274,8 +271,8 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     checkoutId,
     currentTransactionId,
     finishedApiChangesWithNoError,
-    // onTransactionInitialize,
-    // onTransactionProccess,
+    onTransactionInitialize,
+    onTransactionProccess,
     submitInProgress,
     totalPrice.gross.amount,
     validationState,
@@ -304,6 +301,9 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     const decodedRedirectData = Buffer.from(redirectResult, "base64").toString();
 
     setCurrentTransactionId(transaction);
+
+    console.log("YOOOOOOO");
+    clearQueryParams("redirectResult", "resultCode");
 
     void onTransactionProccess({
       id: transaction,

@@ -2,14 +2,9 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
 import { Suspense, useState } from "react";
-import { Button } from "@/checkout-storefront/components/Button";
-import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
-import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
-import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
-import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { CollapseSection } from "@/checkout-storefront/sections/CheckoutForm/CollapseSection";
 import { Divider } from "@/checkout-storefront/components";
@@ -24,21 +19,11 @@ import { GuestBillingAddressSection } from "@/checkout-storefront/sections/Guest
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const CheckoutForm = () => {
-  const formatMessage = useFormattedMessages();
   const { user } = useUser();
   const { checkout } = useCheckout();
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
-
-  const { handleSubmit, isProcessing } = useCheckoutSubmit();
-
-  // const { availablePaymentProviders } = useFetchPaymentMethods();
-  const availablePaymentProviders = [];
-
-  const shouldShowPayButton = availablePaymentProviders.some(
-    (provider) => provider && provider !== "adyen"
-  );
 
   return (
     <div className="checkout-form-container">
@@ -69,24 +54,6 @@ export const CheckoutForm = () => {
           </Suspense>
         </>
       </div>
-      {shouldShowPayButton &&
-        !showOnlyContact &&
-        (isProcessing ? (
-          <Button
-            className="pay-button"
-            disabled
-            ariaLabel={formatMessage(checkoutFormLabels.pay)}
-            label={formatMessage(commonMessages.processing)}
-          />
-        ) : (
-          <Button
-            ariaLabel={formatMessage(checkoutFormLabels.pay)}
-            label={formatMessage(checkoutFormMessages.pay)}
-            className="pay-button"
-            onClick={handleSubmit}
-            data-testid="pay-button"
-          />
-        ))}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import {
 
 export type PaymentGatewayId = AdyenGatewayId;
 
-//TMP until bug with nested data.data in transaction mutations is fixed
 export type ParsedAdyenGateway = ParsedPaymentGateway<AdyenGatewayInitializePayload>;
 
 export type ParsedPaymentGateways = {
@@ -18,8 +17,3 @@ export interface ParsedPaymentGateway<TData extends Record<string, any>>
   data: TData;
   id: PaymentGatewayId;
 }
-
-// export interface PaymentMethod {
-//   id: string;
-//   name: string;
-// }

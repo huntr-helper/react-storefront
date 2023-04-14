@@ -1,4 +1,5 @@
 import { PaymentGateway, PaymentGatewayConfig } from "@/checkout-storefront/graphql";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { adyenGatewayId } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 import {
   ParsedPaymentGateways,
@@ -13,7 +14,7 @@ const paymentGatewayMap: Record<PaymentGatewayId, keyof ParsedPaymentGateways> =
 };
 
 export const getParsedPaymentGatewayConfigs = (
-  gatewayConfigs: PaymentGatewayConfig[] | undefined | null
+  gatewayConfigs: MightNotExist<PaymentGatewayConfig[]>
 ): ParsedPaymentGateways => {
   if (!gatewayConfigs) {
     return {};
@@ -37,7 +38,7 @@ export const getParsedPaymentGatewayConfigs = (
 };
 
 export const getFilteredPaymentGateways = (
-  paymentGateways: PaymentGateway[] | undefined | null
+  paymentGateways: MightNotExist<PaymentGateway[]>
 ): PaymentGateway[] => {
   if (!paymentGateways) {
     return [];

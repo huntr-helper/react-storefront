@@ -6,6 +6,7 @@ import {
   MutationResultData,
   MutationSuccessData,
 } from "@/checkout-storefront/hooks/useSubmit/types";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { CombinedError } from "urql";
 
 type SuccessDataReturn<TMutationFn extends MutationBaseFn> =
@@ -62,7 +63,7 @@ export const extractMutationErrors = <
   TErrorCodes extends string = string
 >(
   result: MutationData<TMutationFn>,
-  extractCustomErrors?: (result: MutationData<TMutationFn>) => any[] | null | undefined
+  extractCustomErrors?: (result: MutationData<TMutationFn>) => MightNotExist<any[]>
 ): ExtractedMutationErrors<TData, TErrorCodes> => {
   const graphqlErrors = result?.error ? [result.error] : [];
 

@@ -11,7 +11,7 @@ import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { ChangeHandler, hasErrors, useForm } from "@/checkout-storefront/hooks/useForm";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
-import { bool, object, string } from "yup";
+import { bool, object, Schema, string } from "yup";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { passwordMessages } from "@/checkout-storefront/sections/SignIn/messages";
@@ -49,7 +49,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
         ? field.min(8, formatMessage(passwordMessages.passwordAtLeastCharacters)).required()
         : field
     ),
-  });
+  }) as Schema<GuestUserFormData>;
 
   const defaultFormData: GuestUserFormData = {
     email: initialEmail || checkout.email || "",

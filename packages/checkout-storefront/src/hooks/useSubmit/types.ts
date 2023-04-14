@@ -18,7 +18,9 @@ export type SubmitReturnWithErrors<
   TErrorCodes extends string = string
 > = Promise<ExtractedMutationErrors<TData, TErrorCodes>>;
 
-export type MutationBaseFn = (vars: any) => Promise<Pick<OperationResult<any, any>, "data">>;
+export type MutationBaseFn = (
+  vars: any
+) => Promise<Pick<OperationResult<any, any>, "data" | "error">>;
 
 export type ParserProps<TData> = TData & CommonVars;
 

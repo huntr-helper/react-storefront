@@ -15,6 +15,8 @@ export const useForm = <TData extends FormDataBase>({
   ...formProps
 }: FormProps<TData>): UseFormReturn<TData> => {
   const { validationSchema } = formProps;
+  // @ts-expect-error because the props we pass and overwrite here don't
+  // always match what formik wants like e.g validateForm
   const form = useFormik<TData>(formProps);
   // we do this because in some cases it's not updated properly
   // https://github.com/jaredpalmer/formik/issues/3165
@@ -62,11 +64,15 @@ export const useForm = <TData extends FormDataBase>({
   };
 
   const validateForm = (values: TData) => {
+    if (!validationSchema) {
+      return {};
+    }
+
     try {
       validationSchema.validateSync(values, { abortEarly: false });
       return {};
     } catch (e) {
-      const errors: ValidationError = { ...e };
+      const errors: ValidationError = { ...(e as ValidationError) };
 
       if (!errors?.inner) {
         return {};

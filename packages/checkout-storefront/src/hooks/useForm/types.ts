@@ -1,6 +1,8 @@
+import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit";
 import { FormikConfig, FormikErrors, FormikHelpers, useFormik } from "formik";
+import { DebouncedFunc } from "lodash-es";
 import { FocusEvent } from "react";
-import { Schema } from "yup";
+import { ObjectSchema } from "yup";
 
 export type FormDataBase = Record<string, any>;
 
@@ -21,9 +23,16 @@ export type UseFormReturn<TData extends FormDataBase> = Omit<
   validateForm: (values: TData) => FormErrors<TData>;
 };
 
-export type FormProps<TData> = Omit<FormikConfig<TData>, "validationSchema"> & {
+export type FormProps<TData extends FormDataBase> = Omit<
+  FormikConfig<TData>,
+  "validationSchema" | "onSubmit"
+> & {
+  onSubmit:
+    | FormSubmitFn<TData>
+    | ((data: TData, helpers: FormHelpers<TData>) => Promise<void>)
+    | DebouncedFunc<(data: TData, helpers: FormHelpers<TData>) => Promise<void>>;
   initialDirty?: boolean;
-  validationSchema: Schema<TData>;
+  validationSchema?: ObjectSchema<TData>;
 };
 
 export type FormHelpers<TData extends FormDataBase> = Omit<
