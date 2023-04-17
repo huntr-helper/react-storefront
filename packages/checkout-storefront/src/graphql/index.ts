@@ -27160,104 +27160,6 @@ export type CheckoutCustomerAttachMutation = {
   } | null;
 };
 
-export type UserAddressDeleteMutationVariables = Exact<{
-  id: Scalars["ID"];
-}>;
-
-export type UserAddressDeleteMutation = {
-  __typename?: "Mutation";
-  accountAddressDelete?: {
-    __typename?: "AccountAddressDelete";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
-export type UserAddressUpdateMutationVariables = Exact<{
-  id: Scalars["ID"];
-  address: AddressInput;
-}>;
-
-export type UserAddressUpdateMutation = {
-  __typename?: "Mutation";
-  accountAddressUpdate?: {
-    __typename?: "AccountAddressUpdate";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
-export type UserAddressCreateMutationVariables = Exact<{
-  address: AddressInput;
-  type?: InputMaybe<AddressTypeEnum>;
-}>;
-
-export type UserAddressCreateMutation = {
-  __typename?: "Mutation";
-  accountAddressCreate?: {
-    __typename?: "AccountAddressCreate";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
 export type CheckoutShippingAddressUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   shippingAddress: AddressInput;
@@ -28417,6 +28319,57 @@ export type TransactionProcessMutation = {
   } | null;
 };
 
+export type UserFragment = {
+  __typename?: "User";
+  id: string;
+  email: string;
+  addresses: Array<{
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  }>;
+  defaultBillingAddress?: {
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  } | null;
+  defaultShippingAddress?: {
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  } | null;
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
@@ -28506,6 +28459,254 @@ export type RequestPasswordResetMutation = {
       field?: string | null;
       code: AccountErrorCode;
     }>;
+  } | null;
+};
+
+export type UserAddressDeleteMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type UserAddressDeleteMutation = {
+  __typename?: "Mutation";
+  accountAddressDelete?: {
+    __typename?: "AccountAddressDelete";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
+export type UserAddressUpdateMutationVariables = Exact<{
+  id: Scalars["ID"];
+  address: AddressInput;
+}>;
+
+export type UserAddressUpdateMutation = {
+  __typename?: "Mutation";
+  accountAddressUpdate?: {
+    __typename?: "AccountAddressUpdate";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
+export type UserAddressCreateMutationVariables = Exact<{
+  address: AddressInput;
+  type?: InputMaybe<AddressTypeEnum>;
+}>;
+
+export type UserAddressCreateMutation = {
+  __typename?: "Mutation";
+  accountAddressCreate?: {
+    __typename?: "AccountAddressCreate";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
   } | null;
 };
 
@@ -28827,6 +29028,22 @@ export const OrderFragmentDoc = gql`
   ${ShippingFragmentDoc}
   ${OrderLineFragmentDoc}
 `;
+export const UserFragmentDoc = gql`
+  fragment UserFragment on User {
+    id
+    email
+    addresses {
+      ...AddressFragment
+    }
+    defaultBillingAddress {
+      ...AddressFragment
+    }
+    defaultShippingAddress {
+      ...AddressFragment
+    }
+  }
+  ${AddressFragmentDoc}
+`;
 export const CheckoutDocument = gql`
   query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
     checkout(id: $id) {
@@ -28943,66 +29160,6 @@ export const CheckoutCustomerAttachDocument = gql`
 export function useCheckoutCustomerAttachMutation() {
   return Urql.useMutation<CheckoutCustomerAttachMutation, CheckoutCustomerAttachMutationVariables>(
     CheckoutCustomerAttachDocument
-  );
-}
-export const UserAddressDeleteDocument = gql`
-  mutation userAddressDelete($id: ID!) {
-    accountAddressDelete(id: $id) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressDeleteMutation() {
-  return Urql.useMutation<UserAddressDeleteMutation, UserAddressDeleteMutationVariables>(
-    UserAddressDeleteDocument
-  );
-}
-export const UserAddressUpdateDocument = gql`
-  mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
-    accountAddressUpdate(id: $id, input: $address) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressUpdateMutation() {
-  return Urql.useMutation<UserAddressUpdateMutation, UserAddressUpdateMutationVariables>(
-    UserAddressUpdateDocument
-  );
-}
-export const UserAddressCreateDocument = gql`
-  mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
-    accountAddressCreate(type: $type, input: $address) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressCreateMutation() {
-  return Urql.useMutation<UserAddressCreateMutation, UserAddressCreateMutationVariables>(
-    UserAddressCreateDocument
   );
 }
 export const CheckoutShippingAddressUpdateDocument = gql`
@@ -29287,20 +29444,10 @@ export function useTransactionProcessMutation() {
 export const UserDocument = gql`
   query user {
     user: me {
-      id
-      email
-      addresses {
-        ...AddressFragment
-      }
-      defaultBillingAddress {
-        ...AddressFragment
-      }
-      defaultShippingAddress {
-        ...AddressFragment
-      }
+      ...UserFragment
     }
   }
-  ${AddressFragmentDoc}
+  ${UserFragmentDoc}
 `;
 
 export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
@@ -29338,5 +29485,77 @@ export const RequestPasswordResetDocument = gql`
 export function useRequestPasswordResetMutation() {
   return Urql.useMutation<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(
     RequestPasswordResetDocument
+  );
+}
+export const UserAddressDeleteDocument = gql`
+  mutation userAddressDelete($id: ID!) {
+    accountAddressDelete(id: $id) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressDeleteMutation() {
+  return Urql.useMutation<UserAddressDeleteMutation, UserAddressDeleteMutationVariables>(
+    UserAddressDeleteDocument
+  );
+}
+export const UserAddressUpdateDocument = gql`
+  mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
+    accountAddressUpdate(id: $id, input: $address) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressUpdateMutation() {
+  return Urql.useMutation<UserAddressUpdateMutation, UserAddressUpdateMutationVariables>(
+    UserAddressUpdateDocument
+  );
+}
+export const UserAddressCreateDocument = gql`
+  mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
+    accountAddressCreate(type: $type, input: $address) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressCreateMutation() {
+  return Urql.useMutation<UserAddressCreateMutation, UserAddressCreateMutationVariables>(
+    UserAddressCreateDocument
   );
 }

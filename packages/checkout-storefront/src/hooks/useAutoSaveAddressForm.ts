@@ -54,8 +54,6 @@ export const useAutoSaveAddressForm = ({
   const partialSubmit = useCallback(async () => {
     const formErrors = validateForm(values);
 
-    // console.log(111, { values, formErrors, dirty });
-    // console.log({ formErrors, dirty });
     if (!hasErrors(formErrors) && dirty) {
       setCheckoutUpdateState("loading");
       void debouncedSubmit(

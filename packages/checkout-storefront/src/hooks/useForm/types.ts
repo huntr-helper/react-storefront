@@ -13,7 +13,7 @@ export type FormDataField<TData extends FormDataBase> = Extract<keyof TData, str
 // we make these types more strict than default formik ones
 export type UseFormReturn<TData extends FormDataBase> = Omit<
   ReturnType<typeof useFormik<TData>>,
-  "setFieldValue" | "validateForm"
+  "setFieldValue" | "validateForm" | "setValues"
 > & {
   // we use keyof FormData instead of plain string
   setFieldValue: <TFieldName extends FormDataField<TData>>(
@@ -21,6 +21,7 @@ export type UseFormReturn<TData extends FormDataBase> = Omit<
     value: TData[TFieldName]
   ) => void;
   validateForm: (values: TData) => FormErrors<TData>;
+  setValues: (values: Partial<TData>) => void;
 };
 
 export type FormProps<TData extends FormDataBase> = Omit<

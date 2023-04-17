@@ -27,6 +27,7 @@ export const useUserBillingAddressForm = () => {
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
     shouldAbort: ({ formData: { addressList, selectedAddressId } }) =>
+      !selectedAddressId ||
       isMatchingAddress(billingAddress, addressList.find(getById(selectedAddressId))),
     parse: ({ languageCode, checkoutId, selectedAddressId, addressList }) => ({
       languageCode,

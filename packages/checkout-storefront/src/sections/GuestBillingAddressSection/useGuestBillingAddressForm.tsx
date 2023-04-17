@@ -37,7 +37,6 @@ export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddre
         scope: "checkoutBillingUpdate",
         onSubmit: checkoutBillingAddressUpdate,
         onStart: ({ formData }) => {
-          console.log(111, formData.countryCode, billingAddress?.country.code);
           if (formData.countryCode !== billingAddress?.country.code) {
             setChangingBillingCountry(true);
           }

@@ -40,8 +40,10 @@ export const useBillingSameAsShippingForm = (
   >({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
+    shouldAbort: ({ formData: { billingAddress } }) => {
+      return !billingAddress || !Object.keys(billingAddress).length;
+    },
     onStart: ({ formData }) => {
-      console.log(111, formData.billingAddress?.country.code, billingAddress?.country.code);
       if (formData.billingAddress?.country.code !== billingAddress?.country.code) {
         setChangingBillingCountry(true);
       }

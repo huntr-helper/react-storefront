@@ -1,9 +1,3 @@
-fragment AccountErrorFragment on AccountError {
-  message
-  field
-  code
-}
-
 fragment CheckoutErrorFragment on CheckoutError {
   message
   field
@@ -245,38 +239,6 @@ mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnu
     }
     checkout {
       ...CheckoutFragment
-    }
-  }
-}
-
-mutation userAddressDelete($id: ID!) {
-  accountAddressDelete(id: $id) {
-    errors {
-      ...AccountErrorFragment
-    }
-    address {
-      ...AddressFragment
-    }
-  }
-}
-mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
-  accountAddressUpdate(id: $id, input: $address) {
-    errors {
-      ...AccountErrorFragment
-    }
-    address {
-      ...AddressFragment
-    }
-  }
-}
-
-mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
-  accountAddressCreate(type: $type, input: $address) {
-    errors {
-      ...AccountErrorFragment
-    }
-    address {
-      ...AddressFragment
     }
   }
 }
