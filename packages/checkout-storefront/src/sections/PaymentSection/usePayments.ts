@@ -12,8 +12,8 @@ export const usePayments = () => {
 
   const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
 
-  // the checkout was already paid earlier, complete
   useEffect(() => {
+    // the checkout was already paid earlier, complete
     if (!completingCheckout && chargeStatus === "FULL") {
       // TMP for development
       // void onCheckoutComplete();

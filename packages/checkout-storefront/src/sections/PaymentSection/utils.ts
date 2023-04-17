@@ -21,7 +21,9 @@ export const getParsedPaymentGatewayConfigs = (
   }
 
   return gatewayConfigs.reduce((result, gatewayConfig) => {
-    if (!gatewayConfig) {
+    const hasError = !gatewayConfig?.data && !!gatewayConfig?.errors?.length;
+
+    if (!gatewayConfig || hasError) {
       return result;
     }
 

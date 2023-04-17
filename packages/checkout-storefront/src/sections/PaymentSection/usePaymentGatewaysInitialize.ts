@@ -46,7 +46,13 @@ export const usePaymentGatewaysInitialize = () => {
           ),
         }),
         onSuccess: ({ data }) => {
-          setGatewayConfigs(getParsedPaymentGatewayConfigs(data.gatewayConfigs));
+          const parsedConfigs = getParsedPaymentGatewayConfigs(data.gatewayConfigs);
+
+          if (!Object.keys(parsedConfigs).length) {
+            throw new Error("No available payment gateways");
+          }
+
+          setGatewayConfigs(parsedConfigs);
         },
         onError: ({ errors }) => {
           console.log({ errors });
