@@ -139,8 +139,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
         },
         extractCustomErrors: (result) => result?.data?.transactionInitialize?.data?.errors,
         onSuccess: async ({ data }) => {
-          // setSubmitting(false);
-
           if (!data) {
             showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
             return;
@@ -149,7 +147,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
           const { transaction, data: adyenData } = data;
 
           if (!transaction || !adyenData) {
-            //alert?
             return;
           }
 
