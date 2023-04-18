@@ -3,8 +3,8 @@ import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubm
 import {
   BlurHandler,
   ChangeHandler,
-  FormConfig,
   FormHelpers,
+  FormProps,
   hasErrors,
   useForm,
   UseFormReturn,
@@ -21,7 +21,7 @@ export type AutoSaveAddressFormData = Partial<AddressFormData>;
 export const useAutoSaveAddressForm = ({
   scope,
   ...formProps
-}: FormConfig<AutoSaveAddressFormData> & {
+}: FormProps<AutoSaveAddressFormData> & {
   scope: CheckoutUpdateStateScope;
 }): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);

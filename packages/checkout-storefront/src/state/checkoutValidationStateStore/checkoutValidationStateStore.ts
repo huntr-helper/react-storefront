@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import shallow from "zustand/shallow";
 
 export type CheckoutFormScope = "shippingAddress" | "billingAddress" | "guestUser";
@@ -12,7 +12,7 @@ export type CheckoutValidationState = {
 
 interface UseCheckoutValidationStateStore extends CheckoutValidationState {
   actions: {
-    validateAllForms: () => void;
+    validateAllForms: (signedIn: boolean) => void;
     setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) => void;
   };
 }
@@ -20,13 +20,19 @@ interface UseCheckoutValidationStateStore extends CheckoutValidationState {
 const useCheckoutValidationStateStore = create<UseCheckoutValidationStateStore>((set) => ({
   validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
   actions: {
-    validateAllForms: () =>
-      set((state) => ({
-        validationState: Object.keys(state.validationState).reduce(
-          (result, key) => ({ ...result, [key]: "validating" }),
-          {} as ValidationState
-        ),
-      })),
+    validateAllForms: (signedIn: boolean) =>
+      set((state) => {
+        const keysToValidate = Object.keys(state.validationState).filter(
+          (val) => !signedIn || val !== "guestUser"
+        ) as CheckoutFormScope[];
+
+        return {
+          validationState: keysToValidate.reduce(
+            (result, key) => ({ ...result, [key]: "validating" }),
+            {} as ValidationState
+          ),
+        };
+      }),
     setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
       set((state) => ({
         validationState: { ...state.validationState, [scope]: status },

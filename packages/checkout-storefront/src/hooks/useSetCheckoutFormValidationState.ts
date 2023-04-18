@@ -19,6 +19,8 @@ export const useSetCheckoutFormValidationState = (scope: CheckoutFormScope) => {
       const formErrors = validateForm(values);
 
       if (!hasErrors(formErrors)) {
+        if (scope === "guestUser") {
+        }
         setValidationState(scope, "valid");
         return;
       }
@@ -28,6 +30,8 @@ export const useSetCheckoutFormValidationState = (scope: CheckoutFormScope) => {
       );
 
       setSubmitInProgress(false);
+      if (scope === "guestUser") {
+      }
       setValidationState(scope, "invalid");
     },
     [scope, setSubmitInProgress, setValidationState]

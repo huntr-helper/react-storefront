@@ -41,6 +41,8 @@ import { adyenErrorMessages } from "@/checkout-storefront/sections/PaymentSectio
 import { camelCase } from "lodash-es";
 import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;
@@ -53,6 +55,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const {
     checkout: { id: checkoutId, totalPrice },
   } = useCheckout();
+  const { authenticated } = useUser();
   const { errorMessages } = useErrorMessages(adyenErrorMessages);
   const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
   const { validateAllForms } = useCheckoutValidationActions();
@@ -214,7 +217,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     component.setStatus("loading");
     console.log(`Calling validateAllForms()`);
     setAdyenCheckoutSubmitParams({ state, component });
-    validateAllForms();
+    validateAllForms(authenticated);
     setSubmitInProgress(true);
   });
 
@@ -222,6 +225,19 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     const validating = anyFormsValidating(validationState);
     const allFormsValid = areAllFormsValid(validationState);
 
+    console.log({
+      validating,
+      allFormsValid,
+      adyenCheckoutSubmitParams,
+      anyRequestsInProgress,
+      checkoutId,
+      currentTransactionId,
+      finishedApiChangesWithNoError,
+      onTransactionInitialize,
+      onTransactionProccess,
+      submitInProgress,
+      validationState,
+    });
     // no submit in progess or still validating forms or some requests in progress or no params
     // do nothing
     if (!submitInProgress || validating || anyRequestsInProgress || !adyenCheckoutSubmitParams) {

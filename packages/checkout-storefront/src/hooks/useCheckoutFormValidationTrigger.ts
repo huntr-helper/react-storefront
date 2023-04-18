@@ -27,7 +27,7 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
 
   const handleGlobalValidationTrigger = useCallback(async () => {
     if (validating) {
-      if (!skip) {
+      if (skip) {
         // we don't validate this form, so just set valid
         setValidationState(scope, "valid");
         return;
