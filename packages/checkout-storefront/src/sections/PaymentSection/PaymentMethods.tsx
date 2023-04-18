@@ -4,15 +4,16 @@ import { usePayments } from "@/checkout-storefront/sections/PaymentSection/usePa
 import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
 
 export const PaymentMethods = () => {
-  const { availablePaymentGateways } = usePayments();
+  const { availablePaymentGateways, fetching } = usePayments();
   const {
-    updateState: { paymentGatewaysInitialize },
     changingBillingCountry,
+    updateState: { checkoutDeliveryMethodUpdate },
   } = useCheckoutUpdateState();
 
   const { adyen } = availablePaymentGateways;
 
-  if (changingBillingCountry || paymentGatewaysInitialize === "loading") {
+  console.log(111, { changingBillingCountry, fetching, checkoutDeliveryMethodUpdate });
+  if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
     return <PaymentSectionSkeleton />;
   }
 

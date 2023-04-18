@@ -3,11 +3,25 @@ import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 import { Section } from "./Section";
-import { CheckIcon } from "@/checkout-storefront/icons";
+import { CheckIcon, ExclamationIcon } from "@/checkout-storefront/icons";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { orderInfoMessages } from "./messages";
 import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
+
+const ErrorIcon = () => {
+  const formatMessage = useFormattedMessages();
+
+  return (
+    <img src={getSvgSrc(ExclamationIcon)} alt={formatMessage(imageAltMessages.exclamationIcon)} />
+  );
+};
+
+const SuccessIcon = () => {
+  const formatMessage = useFormattedMessages();
+
+  return <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />;
+};
 
 export const PaymentSection = () => {
   const formatMessage = useFormattedMessages();
@@ -27,16 +41,16 @@ export const PaymentSection = () => {
             <Text color="success" className="mr-1">
               {formatMessage(orderInfoMessages.orderPaid)}
             </Text>
-            <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />
+            <SuccessIcon />
           </div>
         )}
 
         {chargeStatus === "OVERCHARGED" && (
           <div className="flex flex-row items-center">
-            <Text color="success" className="mr-1">
+            <Text color="error" className="mr-1">
               {formatMessage(orderInfoMessages.orderOvercharged)}
             </Text>
-            <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />
+            <ErrorIcon />
           </div>
         )}
       </div>

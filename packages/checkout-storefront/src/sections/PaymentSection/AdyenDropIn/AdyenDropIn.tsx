@@ -11,6 +11,7 @@ import "@adyen/adyen-web/dist/adyen.css";
 import { Locale } from "@/checkout-storefront/lib/regions";
 import { ParsedAdyenGateway } from "@/checkout-storefront/sections/PaymentSection/types";
 import { isEqual } from "lodash-es";
+import { AdyenGatewayInitializePayload } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -28,34 +29,23 @@ export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
   const dropinComponentRef = useRef<DropinElement | null>(null);
 
   const createAdyenCheckoutInstance = useCallback(
-    async (locale: Locale, container: HTMLDivElement) => {
-      // console.log(123, { lol: config.data });
+    async (locale: Locale, container: HTMLDivElement, data: AdyenGatewayInitializePayload) => {
       const adyenCheckout = await AdyenCheckout(
-        createAdyenCheckoutConfig({ ...config.data, locale, onSubmit, onAdditionalDetails })
+        createAdyenCheckoutConfig({ ...data, locale, onSubmit, onAdditionalDetails })
       );
 
       const dropin = adyenCheckout.create("dropin").mount(container);
 
       dropinComponentRef.current = dropin;
     },
-    [config.data, onAdditionalDetails, onSubmit]
+    [onAdditionalDetails, onSubmit]
   );
 
   useEffect(() => {
     const hasConfigChanged = !isEqual(config, prevConfig.current);
     const hasLocaleChanged = locale !== prevLocale.current;
 
-    // console.log(
-    //   123,
-    //   config,
-    //   prevConfig.current,
-    //   hasConfigChanged,
-    //   hasLocaleChanged,
-    //   dropinComponentRef.current,
-    //   dropinContainerElRef.current
-    // );
     if (!dropinContainerElRef.current || (!hasConfigChanged && !hasLocaleChanged)) {
-      // console.log(123, "EXIT");
       return;
     }
 
@@ -67,13 +57,12 @@ export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
       prevConfig.current = config;
     }
 
-    // console.log(123, "PROCEED");
-    void createAdyenCheckoutInstance(locale, dropinContainerElRef.current);
+    void createAdyenCheckoutInstance(locale, dropinContainerElRef.current, config.data);
   }, [config, createAdyenCheckoutInstance, locale]);
 
   useEffect(() => {
     if (dropinContainerElRef.current && !dropinComponentRef.current) {
-      void createAdyenCheckoutInstance(locale, dropinContainerElRef.current);
+      void createAdyenCheckoutInstance(locale, dropinContainerElRef.current, config.data);
     }
   }, []);
 
