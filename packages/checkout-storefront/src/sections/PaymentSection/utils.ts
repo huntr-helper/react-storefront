@@ -1,5 +1,6 @@
 import { PaymentGateway, PaymentGatewayConfig } from "@/checkout-storefront/graphql";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
+import { getUrl, replaceUrl } from "@/checkout-storefront/lib/utils/url";
 import { adyenGatewayId } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 import {
   ParsedPaymentGateways,
@@ -61,3 +62,5 @@ export const getFilteredPaymentGateways = (
     return shouldBeIncluded;
   });
 };
+
+export const getUrlForTransactionInitialize = () => getUrl({ query: { processingPayment: true } });

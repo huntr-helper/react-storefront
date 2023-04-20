@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export const usePayments = () => {
   const {
-    checkout: { chargeStatus },
+    checkout: { chargeStatus, authorizeStatus },
   } = useCheckout();
 
   const { fetching, availablePaymentGateways } = usePaymentGatewaysInitialize();
@@ -14,7 +14,12 @@ export const usePayments = () => {
 
   useEffect(() => {
     // the checkout was already paid earlier, complete
-    if (!completingCheckout && chargeStatus === "FULL") {
+    if (
+      !completingCheckout &&
+      (chargeStatus === "FULL" ||
+        chargeStatus === "OVERCHARGED" ||
+        (chargeStatus === "NONE" && authorizeStatus === "FULL"))
+    ) {
       // TMP for development
       // void onCheckoutComplete();
     }

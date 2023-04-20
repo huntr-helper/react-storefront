@@ -8,6 +8,7 @@ import { DummyPayment } from "../DummyPayment/DummyPayment";
 import { rootViewsMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { PaymentProcessingScreen } from "@/checkout-storefront/sections/PaymentSection/PaymentProcessingScreen";
 
 export const RootViews = () => {
   const orderId = getQueryParams().orderId;
@@ -39,8 +40,10 @@ export const RootViews = () => {
   }
 
   return (
-    <Suspense fallback={<CheckoutSkeleton />}>
-      <Checkout />
-    </Suspense>
+    <PaymentProcessingScreen>
+      <Suspense fallback={<CheckoutSkeleton />}>
+        <Checkout />
+      </Suspense>
+    </PaymentProcessingScreen>
   );
 };

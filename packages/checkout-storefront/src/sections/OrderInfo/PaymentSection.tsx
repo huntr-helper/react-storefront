@@ -45,8 +45,6 @@ export const PaymentSection = () => {
     <Section title={formatMessage(orderInfoMessages.paymentSection)}>
       <div data-testid="paymentStatus">
         <div className="flex flex-row items-center">
-          {/* <PaymentDetails paymentData={paymentData} paymentStatusLoading={paymentStatusLoading} /> */}
-
           {chargeStatus === "NONE" && authorizeStatus === "FULL" && (
             <SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
           )}

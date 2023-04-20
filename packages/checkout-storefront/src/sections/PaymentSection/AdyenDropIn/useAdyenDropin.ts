@@ -42,7 +42,10 @@ import { camelCase } from "lodash-es";
 import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
-import { useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
+import {
+  getUrlForTransactionInitiale,
+  getUrlForTransactionInitialize,
+} from "@/checkout-storefront/sections/PaymentSection/utils";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;
@@ -262,7 +265,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
         id,
         data: {
           ...adyenCheckoutSubmitParams.state.data,
-          returnUrl: getCurrentHref(),
+          returnUrl: getUrlForTransactionInitialize()?.newUrl,
         },
       },
     });
@@ -292,9 +295,9 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
   // handle when page is opened from previously redirected payment
   useEffect(() => {
-    const { redirectResult, transaction } = getQueryParams();
+    const { redirectResult, transaction, processingPayment } = getQueryParams();
 
-    if (!redirectResult || !transaction) {
+    if (!redirectResult || !transaction || !processingPayment) {
       return;
     }
 
