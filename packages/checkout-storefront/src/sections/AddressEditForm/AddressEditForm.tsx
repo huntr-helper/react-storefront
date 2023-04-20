@@ -6,7 +6,7 @@ import {
   useUserAddressDeleteMutation,
   useUserAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   getAddressFormDataFromAddress,

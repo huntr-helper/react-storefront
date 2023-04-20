@@ -7,7 +7,7 @@ import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 
 interface PromoCodeFormData {

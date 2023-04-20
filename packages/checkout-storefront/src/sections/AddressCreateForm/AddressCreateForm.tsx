@@ -2,7 +2,7 @@ import { AddressFormData } from "@/checkout-storefront/components/AddressForm/ty
 import React from "react";
 import { AddressForm, AddressFormProps } from "@/checkout-storefront/components/AddressForm";
 import { AddressFragment, useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   getEmptyAddressFormData,
