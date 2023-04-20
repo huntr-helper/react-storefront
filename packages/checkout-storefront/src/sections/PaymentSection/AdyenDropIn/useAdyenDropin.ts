@@ -42,6 +42,7 @@ import { camelCase } from "lodash-es";
 import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
+import { useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;
@@ -176,13 +177,15 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
       () => ({
         onSubmit: transactionProccess,
         onError: () => {
+          // we don't do these at onFinished since redirect will happen first
+          clearQueryParams("transaction");
+          setCurrentTransactionId(null);
+
           showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
           adyenCheckoutSubmitParams?.component.setStatus("ready");
         },
         extractCustomErrors: (result) => result?.data?.transactionProcess?.data?.errors,
         onSuccess: ({ data }) => {
-          // setSubmitting(false);
-
           if (!data?.data) {
             showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
             return;
@@ -192,6 +195,10 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
             transaction,
             data: { paymentDetailsResponse },
           } = data;
+
+          // we don't do these at onFinished since redirect will happen first
+          clearQueryParams("transaction");
+          setCurrentTransactionId(null);
 
           handlePaymentResult({
             paymentResponse: paymentDetailsResponse,
@@ -291,7 +298,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
       return;
     }
 
-    const decodedRedirectData = Buffer.from(redirectResult, "base64").toString();
+    const decodedRedirectData = decodeURI(redirectResult);
 
     setCurrentTransactionId(transaction);
 
@@ -299,7 +306,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
     void onTransactionProccess({
       id: transaction,
-      data: { details: decodedRedirectData },
+      data: { details: { redirectResult: decodedRedirectData } },
     });
   }, []);
 

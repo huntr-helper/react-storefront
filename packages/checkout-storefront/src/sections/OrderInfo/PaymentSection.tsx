@@ -9,65 +9,57 @@ import { orderInfoMessages } from "./messages";
 import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
 
-const ErrorIcon = () => {
+const ErrorMessage = ({ message }: { message: string }) => {
   const formatMessage = useFormattedMessages();
 
   return (
-    <img src={getSvgSrc(ExclamationIcon)} alt={formatMessage(imageAltMessages.exclamationIcon)} />
+    <>
+      <Text color="error" className="mr-1">
+        {message}
+      </Text>
+      <img src={getSvgSrc(ExclamationIcon)} alt={formatMessage(imageAltMessages.exclamationIcon)} />
+    </>
   );
 };
 
-const SuccessIcon = () => {
+const SuccessMessage = ({ message }: { message: string }) => {
   const formatMessage = useFormattedMessages();
 
-  return <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />;
+  return (
+    <>
+      <Text color="success" className="mr-1">
+        {message}
+      </Text>
+      <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />
+    </>
+  );
 };
 
 export const PaymentSection = () => {
   const formatMessage = useFormattedMessages();
   const {
-    order: { chargeStatus },
+    order: { chargeStatus, authorizeStatus },
   } = useOrder();
 
   return (
     <Section title={formatMessage(orderInfoMessages.paymentSection)}>
       <div data-testid="paymentStatus">
-        {/* <PaymentDetails paymentData={paymentData} paymentStatusLoading={paymentStatusLoading} /> */}
+        <div className="flex flex-row items-center">
+          {/* <PaymentDetails paymentData={paymentData} paymentStatusLoading={paymentStatusLoading} /> */}
 
-        {/* { && <Skeleton className="w-1/2" />} */}
+          {chargeStatus === "NONE" && authorizeStatus === "FULL" && (
+            <SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
+          )}
 
-        {chargeStatus === "FULL" && (
-          <div className="flex flex-row items-center">
-            <Text color="success" className="mr-1">
-              {formatMessage(orderInfoMessages.orderPaid)}
-            </Text>
-            <SuccessIcon />
-          </div>
-        )}
+          {chargeStatus === "FULL" && (
+            <SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
+          )}
 
-        {chargeStatus === "OVERCHARGED" && (
-          <div className="flex flex-row items-center">
-            <Text color="error" className="mr-1">
-              {formatMessage(orderInfoMessages.orderOvercharged)}
-            </Text>
-            <ErrorIcon />
-          </div>
-        )}
+          {chargeStatus === "OVERCHARGED" && (
+            <ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
+          )}
+        </div>
       </div>
     </Section>
   );
 };
-
-// if (paymentData?.status === "PENDING") {
-//   return <Text color="success">{formatMessage(orderInfoMessages.paymentPending)}</Text>;
-// }
-
-// if (paymentData?.status === "UNPAID") {
-//   return (
-//     <div>
-//       <Text color="error">{formatMessage(orderInfoMessages.orderUnpaid)}</Text>
-//     </div>
-//   );
-// }}
-
-// return <Text color="error">{formatMessage(orderInfoMessages.orderPaymentStatusMissing)}</Text>;
