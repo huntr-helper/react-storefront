@@ -15,7 +15,7 @@ export const useCheckout = ({ pause = false } = {}) => {
 
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
     variables: { id, languageCode: localeToLanguageCode(locale) },
-    pause: pause, // || isAuthenticating,
+    pause: pause || isAuthenticating,
   });
 
   useEffect(() => setLoadingCheckout(loading || stale), [loading, setLoadingCheckout, stale]);
