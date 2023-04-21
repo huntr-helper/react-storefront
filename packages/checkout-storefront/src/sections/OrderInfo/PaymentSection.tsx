@@ -8,6 +8,7 @@ import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { orderInfoMessages } from "./messages";
 import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
+import { usePaymentStatus } from "@/checkout-storefront/sections/PaymentSection/utils";
 
 const ErrorMessage = ({ message }: { message: string }) => {
   const formatMessage = useFormattedMessages();
@@ -37,23 +38,22 @@ const SuccessMessage = ({ message }: { message: string }) => {
 
 export const PaymentSection = () => {
   const formatMessage = useFormattedMessages();
-  const {
-    order: { chargeStatus, authorizeStatus },
-  } = useOrder();
+  const { order } = useOrder();
+  const paymentStatus = usePaymentStatus(order);
 
   return (
     <Section title={formatMessage(orderInfoMessages.paymentSection)}>
       <div data-testid="paymentStatus">
         <div className="flex flex-row items-center">
-          {chargeStatus === "NONE" && authorizeStatus === "FULL" && (
+          {paymentStatus === "authorized" && (
             <SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
           )}
 
-          {chargeStatus === "FULL" && (
+          {paymentStatus === "paidInFull" && (
             <SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
           )}
 
-          {chargeStatus === "OVERCHARGED" && (
+          {paymentStatus === "overpaid" && (
             <ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
           )}
         </div>

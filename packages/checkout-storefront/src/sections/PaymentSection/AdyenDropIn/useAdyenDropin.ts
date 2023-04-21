@@ -29,7 +29,6 @@ import {
   replaceUrl,
 } from "@/checkout-storefront/lib/utils/url";
 import { ParsedAdyenGateway } from "@/checkout-storefront/sections/PaymentSection/types";
-import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import {
   areAnyRequestsInProgress,
   hasFinishedApiChangesWithNoError,
@@ -42,10 +41,7 @@ import { camelCase } from "lodash-es";
 import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
-import {
-  getUrlForTransactionInitiale,
-  getUrlForTransactionInitialize,
-} from "@/checkout-storefront/sections/PaymentSection/utils";
+import { getUrlForTransactionInitialize } from "@/checkout-storefront/sections/PaymentSection/utils";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;

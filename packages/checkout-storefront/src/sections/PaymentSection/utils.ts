@@ -1,4 +1,11 @@
-import { PaymentGateway, PaymentGatewayConfig } from "@/checkout-storefront/graphql";
+import {
+  CheckoutAuthorizeStatusEnum,
+  CheckoutChargeStatusEnum,
+  OrderAuthorizeStatusEnum,
+  OrderChargeStatusEnum,
+  PaymentGateway,
+  PaymentGatewayConfig,
+} from "@/checkout-storefront/graphql";
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { getUrl, replaceUrl } from "@/checkout-storefront/lib/utils/url";
 import { adyenGatewayId } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
@@ -64,3 +71,27 @@ export const getFilteredPaymentGateways = (
 };
 
 export const getUrlForTransactionInitialize = () => getUrl({ query: { processingPayment: true } });
+
+type PaymentStatus = "paidInFull" | "overpaid" | "none" | "authorized";
+
+export const usePaymentStatus = ({
+  chargeStatus,
+  authorizeStatus,
+}: {
+  chargeStatus: CheckoutChargeStatusEnum | OrderChargeStatusEnum;
+  authorizeStatus: CheckoutAuthorizeStatusEnum | OrderAuthorizeStatusEnum;
+}): PaymentStatus => {
+  if (chargeStatus === "NONE" && authorizeStatus === "FULL") {
+    return "authorized";
+  }
+
+  if (chargeStatus === "FULL") {
+    return "paidInFull";
+  }
+
+  if (chargeStatus === "OVERCHARGED") {
+    return "overpaid";
+  }
+
+  return "none";
+};

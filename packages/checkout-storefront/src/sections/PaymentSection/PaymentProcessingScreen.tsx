@@ -20,6 +20,16 @@ interface PaymentProcessingScreenProps extends Children {}
 
 export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = ({ children }) => {
   const formatMessage = useFormattedMessages();
+
+  const handleSetStyles = (processing: boolean) => {
+    const el = document.getElementById("page");
+
+    if (el) {
+      el.style.maxHeight = processing ? "100vh" : "auto";
+      el.style.overflow = processing ? "hidden" : "auto";
+    }
+  };
+
   const getInitialProcessing = () => {
     const { transaction, processingPayment } = getQueryParams();
 
@@ -27,17 +37,14 @@ export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = (
   };
 
   const [isProcessingPayment, setIsProcessingPayment] = useState(getInitialProcessing());
-
   const handleSetProcessing = (processing: boolean) => {
-    const el = document.getElementById("page");
-
-    if (el) {
-      el.style.maxHeight = processing ? "100vh" : "auto";
-      el.style.overflow = processing ? "hidden" : "auto";
-    }
-
+    handleSetStyles(processing);
     setIsProcessingPayment(processing);
   };
+
+  useEffect(() => {
+    handleSetStyles(isProcessingPayment);
+  }, []);
 
   return (
     <Provider value={{ setIsProcessingPayment: handleSetProcessing }}>
