@@ -415,6 +415,10 @@
     "developer_comment": "save accessibility label",
     "string": "Save address"
   },
+  "OrderInfo/messages/+SXlNJ": {
+    "developer_comment": "We've received your payment authorization",
+    "string": "We've received your payment authorization"
+  },
   "OrderInfo/messages/1hMnDx": {
     "string": "Your order has been paid more than owed. This may be an error during payment. Contact your shop staff for help."
   },
@@ -474,25 +478,9 @@
     "developer_comment": "payment providers accessibility label",
     "string": "payment providers"
   },
-  "PaymentSection/messages/bFYz7Q": {
-    "developer_comment": "dropin",
-    "string": "Drop in"
-  },
-  "PaymentSection/messages/im88Fe": {
-    "developer_comment": "credit card",
-    "string": "Credit card"
-  },
-  "PaymentSection/messages/jdRifS": {
-    "developer_comment": "paypal",
-    "string": "PayPal"
-  },
-  "PaymentSection/messages/p7Zg+S": {
-    "developer_comment": "apple pay",
-    "string": "Apple Pay"
-  },
-  "PaymentSection/messages/xXCQ+K": {
-    "developer_comment": "dummy payment method",
-    "string": "Dummy"
+  "PaymentSection/messages/qEunhG": {
+    "developer_comment": "Almost done",
+    "string": "Almost done..."
   },
   "PaymentSection/messages/yz03kH": {
     "developer_comment": "payment methods",
